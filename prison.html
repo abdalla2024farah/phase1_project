@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prison Management System</title>
+    <link rel="stylesheet" href="prison.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Prison Management System</h1>
+
+        <!-- Prisoner Management Section -->
+        <section id="prisoner-management">
+            
+            <div id="prisoner-list">
+                <!-- Prisoner data will be displayed here -->
+            </div>
+            <form id="add-prisoner-form">
+                <h3>Add New Prisoner</h3>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="crime">Crime:</label>
+                <input type="text" id="crime" name="crime" required>
+                <label for="sentence">Sentence (years):</label>
+                <input type="number" id="sentence" name="sentence" required>
+                <button type="submit">Add Prisoner</button>
+                
+            </form>
+        </section>
+    <div>
+         <!-- Staff Management Section -->
+         <section id="staff-management">
+            <h2>Staff Management</h2>
+            <div id="staff-list">
+                <!-- Staff data will be displayed here -->
+            </div>
+            <form id="add-staff-form">
+                <h3>Add New Staff Member</h3>
+                <label for="staff-name">Name:</label>
+                <input type="text" id="staff-name" name="staff-name" required>
+                <label for="staff-role">Role:</label>
+                <input type="text" id="staff-role" name="staff-role" required>
+                <label for="staff-department">Department:</label>
+                <input type="text" id="staff-department" name="staff-department" required>
+                <button type="submit">Add Staff Member</button>
+                
+            </form>
+        </section>
+    </div>
+
+    <script src="prison.js"></script>
+</body>
+</html>
