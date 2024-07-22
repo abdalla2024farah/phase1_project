@@ -1,53 +1,4 @@
-// Initial data
-let prisoners = [
-    { id: 1, name: "John Doe", crime: "Theft", sentence: 5 },
-    { id: 2, name: "Jane Smith", crime: "Forgery", sentence: 7 }
-];
-
-let staffMembers = [
-    { id: 1, name: "Alice Johnson", role: "Guard", department: "Security" },
-    { id: 2, name: "Bob Williams", role: "Counselor", department: "Rehabilitation" }
-];
-
-// DOM elements
-const prisonerList = document.getElementById('prisoner-list');
-const staffList = document.getElementById('staff-list');
-const addPrisonerForm = document.getElementById('add-prisoner-form');
-const addStaffForm = document.getElementById('add-staff-form');
-const apiUrl = 'http://localhost:5501'; 
-
-
-// Function to display prisoners in the UI
-function displayPrisoners() {
-    prisonerList.innerHTML = '';
-    prisoners.forEach(prisoner => {
-        const prisonerDiv = document.createElement('div');
-        prisonerDiv.classList.add('prisoner');
-        prisonerDiv.innerHTML = `
-            <p><strong>Name:</strong> ${prisoner.name}</p>
-            <p><strong>Crime:</strong> ${prisoner.crime}</p>
-            <p><strong>Sentence:</strong> ${prisoner.sentence} years</p>
-            <button class="delete-btn" onclick="deletePrisoner(${prisoner.id})">Delete</button>
-        `;
-        prisonerList.appendChild(prisonerDiv);
-    });
-}
-
-// Function to display staff members in the UI
-function displayStaffMembers() {
-    staffList.innerHTML = '';
-    staffMembers.forEach(staff => {
-        const staffDiv = document.createElement('div');
-        staffDiv.classList.add('staff-member');
-        staffDiv.innerHTML = `
-            <p><strong>Name:</strong> ${staff.name}</p>
-            <p><strong>Role:</strong> ${staff.role}</p>
-            <p><strong>Department:</strong> ${staff.department}</p>
-            <button class="delete-btn" onclick="deleteStaffMember(${staff.id})">Delete</button>
-        `;
-        staffList.appendChild(staffDiv);
-    });
-}
+const apiUrl = 'http://localhost:3000'; // Adjust port if necessary
 
 // Function to add a new prisoner
 addPrisonerForm.addEventListener('submit', function(event) {
@@ -58,14 +9,31 @@ addPrisonerForm.addEventListener('submit', function(event) {
 
     if (name && crime && sentence) {
         const newPrisoner = {
-            id: prisoners.length > 0 ? prisoners[prisoners.length - 1].id + 1 : 1,
             name: name,
             crime: crime,
             sentence: sentence
         };
-        prisoners.push(newPrisoner);
-        displayPrisoners();
-        addPrisonerForm.reset();
+
+        fetch(`${apiUrl}/prisoners`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newPrisoner),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to add prisoner');
+            }
+            return response.json();
+        })
+        .then(() => {
+            displayPrisoners();
+            addPrisonerForm.reset();
+        })
+        .catch(error => {
+            console.error('Error adding prisoner:', error);
+        });
     } else {
         alert('Please fill out all fields.');
     }
@@ -80,14 +48,31 @@ addStaffForm.addEventListener('submit', function(event) {
 
     if (staffName && staffRole && staffDepartment) {
         const newStaffMember = {
-            id: staffMembers.length > 0 ? staffMembers[staffMembers.length - 1].id + 1 : 1,
             name: staffName,
             role: staffRole,
             department: staffDepartment
         };
-        staffMembers.push(newStaffMember);
-        displayStaffMembers();
-        addStaffForm.reset();
+
+        fetch(`${apiUrl}/staff`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newStaffMember),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to add staff member');
+            }
+            return response.json();
+        })
+        .then(() => {
+            displayStaffMembers();
+            addStaffForm.reset();
+        })
+        .catch(error => {
+            console.error('Error adding staff member:', error);
+        });
     } else {
         alert('Please fill out all fields.');
     }
@@ -95,12 +80,116 @@ addStaffForm.addEventListener('submit', function(event) {
 
 // Function to delete a prisoner
 function deletePrisoner(id) {
-    prisoners = prisoners.filter(prisoner => prisoner.id !== id);
-    displayPrisoners();
+    fetch(`${apiUrl}/prisoners/${id}`, {
+        method: 'DELETE',
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete prisoner');
+        }
+        return response.json();
+    })
+    .then(() => {
+        displayPrisoners();
+    })
+    .catch(error => {
+        console.error('Error deleting prisoner:', error);
+    });
 }
 
 // Function to delete a staff member
 function deleteStaffMember(id) {
-    staffMembers = staffMembers.filter(staff => staff.id !== id);
-    displayStaffMembers();
+    fetch(`${apiUrl}/staff/${id}`, {
+        method: 'DELETE',
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete staff member');
+        }
+        return response.json();
+    })
+    .then(() => {
+        displayStaffMembers();
+    })
+    .catch(error => {
+        console.error('Error deleting staff member:', error);
+    });
 }
+
+// Function to edit a prisoner
+function editPrisoner(id) {
+    const newName = prompt('Enter new name');
+    const newCrime = prompt('Enter new crime');
+    const newSentence = parseInt(prompt('Enter new sentence'));
+
+    if (newName && newCrime && newSentence) {
+        const updatedPrisoner = {
+            name: newName,
+            crime: newCrime,
+            sentence: newSentence
+        };
+
+        fetch(`${apiUrl}/prisoners/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedPrisoner),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update prisoner');
+            }
+            return response.json();
+        })
+        .then(() => {
+            displayPrisoners();
+        })
+        .catch(error => {
+            console.error('Error updating prisoner:', error);
+        });
+    } else {
+        alert('Invalid input. Please try again.');
+    }
+}
+
+// Function to edit a staff member
+function editStaffMember(id) {
+    const newName = prompt('Enter new name');
+    const newRole = prompt('Enter new role');
+    const newDepartment = prompt('Enter new department');
+
+    if (newName && newRole && newDepartment) {
+        const updatedStaffMember = {
+            name: newName,
+            role: newRole,
+            department: newDepartment
+        };
+
+        fetch(`${apiUrl}/staff/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedStaffMember),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update staff member');
+            }
+            return response.json();
+        })
+        .then(() => {
+            displayStaffMembers();
+        })
+        .catch(error => {
+            console.error('Error updating staff member:', error);
+        });
+    } else {
+        alert('Invalid input. Please try again.');
+    }
+}
+
+// Initial display of prisoners and staff members
+displayPrisoners();
+displayStaffMembers();

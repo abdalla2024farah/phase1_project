@@ -1,5 +1,11 @@
 {
-    "prisoners": [],
-    "staff": []
+    "prisoners": [
+      { "id": 1, "name": "John Doe", "crime": "Theft", "sentence": 5 },
+      { "id": 2, "name": "Jane Smith", "crime": "Forgery", "sentence": 7 }
+    ],
+    "staffMembers": [
+      { "id": 1, "name": "Alice Johnson", "role": "Guard", "department": "Security" },
+      { "id": 2, "name": "Bob Williams", "role": "Counselor", "department": "Rehabilitation" }
+    ]
   }
   
