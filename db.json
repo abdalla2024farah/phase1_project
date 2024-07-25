@@ -8,4 +8,8 @@
       { "id": 2, "name": "Bob Williams", "role": "Counselor", "department": "Rehabilitation" }
     ]
   }
-  
+  {
+    "prisoners": [
+        { "id" : 1, "nmae": "ali", "crime": "theft", "sentence":6}
+    ]
+  }
